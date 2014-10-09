@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  entity:
+    - field.storage.user.field_sendstate
+id: user.user.field_sendstate
+field_name: field_sendstate
+entity_type: user
+bundle: user
+label: 'Send emails'
+description: ''
+required: true
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings: {  }
+third_party_settings: {  }
+field_type: boolean

@@ -1,0 +1,17 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - user
+id: user.field_sendstate
+field_name: field_sendstate
+entity_type: user
+type: boolean
+settings:
+  on_label: Mute
+  off_label: Send
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }

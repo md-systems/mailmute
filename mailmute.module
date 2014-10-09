@@ -1,0 +1,16 @@
+<?php
+/**
+ * @file
+ * Main procedural code for the Mailmute module.
+ */
+
+/**
+ * Implements hook_mail_alter().
+ */
+function mailmute_mail_alter(&$message) {
+  // @todo Also check Cc, Bcc.
+  if (\Drupal::service('mail.mute')->isMutedFor($message['to'])) {
+    $message['send'] = FALSE;
+    drupal_set_message(t('Message to %mail suppressed.', array('%mail' => $message['to'])), 'warning');
+  }
+}
