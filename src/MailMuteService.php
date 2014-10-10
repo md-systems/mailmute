@@ -49,17 +49,26 @@ class MailMuteService  {
     // @todo Extract email from strings like "Foo Bar <foo.bar@example.com>".
     // @todo Handle multiple recipients.
     foreach ($this->entityManager->getFieldMap() as $entity_type => $fields) {
+
+      // Both users and Simplenews subscribers use 'mail' for email field name.
       if (isset($fields['field_sendstate']) && isset($fields['mail'])) {
+
+        // Get the entity for the given email.
         $entities = $this->entityManager->getStorage($entity_type)->loadByProperties(array(
           'mail' => $email,
         ));
         $entity = reset($entities);
+
+        // Check the send state value.
         $send_state = $entity->field_sendstate->value;
         if ($send_state != static::STATE_SEND) {
           return TRUE;
         }
       }
     }
+
+    // There may be multiple entities with the given email. Return FALSE only if
+    // none of them has a mute state.
     return FALSE;
   }
 
