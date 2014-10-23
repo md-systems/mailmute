@@ -16,7 +16,7 @@ use Drupal\Core\Plugin\DefaultPluginManager;
  *
  * @todo Rename to SendStateManager
  */
-class SendStateManager extends DefaultPluginManager {
+class SendStateManager extends DefaultPluginManager implements SendStateManagerInterface {
 
   /**
    * The value representing the 'Send' send state.
@@ -50,18 +50,28 @@ class SendStateManager extends DefaultPluginManager {
   /**
    * Get the send state for a given email.
    *
-   * @param string $email
+   * @param string $address
    *   The email address that a mail is being sent to.
    *
    * @return \Drupal\mailmute\SendStateInterface
    *   The current send state of the given email.
    */
-  public function getStatus($email) {
+  public function getState($address) {
     // @todo Handle multiple recipients.
-    if ($field = $this->getField($email)) {
+    if ($field = $this->getField($address)) {
       return $this->createInstance($field->value);
     }
     return NULL;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setState($address, SendStateInterface $state) {
+    if ($field = $this->getField($address)) {
+      $field->setValue($state);
+      $field->getEntity()->save();
+    }
   }
 
   /**
