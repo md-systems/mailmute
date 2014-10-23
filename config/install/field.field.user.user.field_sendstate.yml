@@ -13,8 +13,8 @@ required: true
 translatable: false
 default_value:
   -
-    value: 0
+    value: send
 default_value_callback: ''
 settings: {  }
 third_party_settings: {  }
-field_type: boolean
+field_type: string

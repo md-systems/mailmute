@@ -6,10 +6,9 @@ dependencies:
 id: user.field_sendstate
 field_name: field_sendstate
 entity_type: user
-type: boolean
+type: string
 settings:
-  on_label: Mute
-  off_label: Send
+  max_length: 255
 module: core
 locked: false
 cardinality: 1

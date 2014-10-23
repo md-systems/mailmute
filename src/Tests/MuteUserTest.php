@@ -6,7 +6,7 @@
 
 namespace Drupal\mailmute\Tests;
 use Drupal\Core\Language\LanguageInterface;
-use Drupal\mailmute\MailMuteService;
+use Drupal\mailmute\SendStateManager;
 use Drupal\simpletest\WebTestBase;
 use Drupal\user\Entity\User;
 
@@ -43,7 +43,7 @@ class MuteUserTest extends WebTestBase {
   public function testStates() {
     // A Send state field should be added to User on install.
     $field_map = \Drupal::entityManager()->getFieldMap();
-    $this->assert($field_map['user']['field_sendstate']['type'] == 'boolean');
+    $this->assert($field_map['user']['field_sendstate']['type'] == 'string');
 
     /** @var \Drupal\user\UserInterface $user */
     $user = User::create(array(
@@ -52,15 +52,15 @@ class MuteUserTest extends WebTestBase {
     ));
     $user->save();
 
-    // Default value should be 0 (Send).
-    $this->assertEqual($user->field_sendstate->value, MailMuteService::STATE_SEND);
+    // Default value should be send.
+    $this->assertEqual($user->field_sendstate->value, 'send');
 
     // Mails should be sent normally.
     $sent = $this->mail($user);
     $this->assertTrue($sent);
 
-    // When value is 1 (Mute), mails should not be sent.
-    $user->field_sendstate->value = MailMuteService::STATE_MUTE;
+    // When value is onhold, mails should not be sent.
+    $user->field_sendstate->value = 'onhold';
     $user->save();
     $sent = $this->mail($user);
     $this->assertFalse($sent);
