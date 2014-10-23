@@ -45,4 +45,15 @@ interface SendStateManagerInterface {
    */
   public function isMute($address);
 
+  /**
+   * Returns whether the manager manages send states for the given address.
+   *
+   * @param string $address
+   *   An email address.
+   *
+   * @return bool
+   *   Whether send states for the address are managed.
+   */
+  public function isManaged($address);
+
 }

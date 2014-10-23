@@ -70,6 +70,13 @@ class SendStateManager extends DefaultPluginManager implements SendStateManagerI
   }
 
   /**
+   * {@inheritdoc}
+   */
+  public function isManaged($address) {
+    return $this->getField($address);
+  }
+
+  /**
    * Find and return the send state field for the given email address.
    *
    * @param string $email
@@ -101,5 +108,4 @@ class SendStateManager extends DefaultPluginManager implements SendStateManagerI
     // none of them has the send state field.
     return NULL;
   }
-
 }
