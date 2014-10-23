@@ -6,7 +6,12 @@
 
 namespace Drupal\mailmute;
 
-interface SendStateInterface {
+use Drupal\Component\Plugin\PluginInspectionInterface;
+
+/**
+ * Provides methods to interact with a send state.
+ */
+interface SendStateInterface extends PluginInspectionInterface {
 
   /**
    * Tells whether to suppress messages to addresses with this state.

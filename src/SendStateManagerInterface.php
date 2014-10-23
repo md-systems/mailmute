@@ -14,6 +14,8 @@ interface SendStateManagerInterface {
   /**
    * Get the send state of an address.
    *
+   * @todo Remove in favor of isMute()?
+   *
    * @param string $address
    *   The mail address whose state should be returned.
    *
@@ -27,9 +29,20 @@ interface SendStateManagerInterface {
    *
    * @param string $address
    *   The mail address whose state should be set.
-   * @param \Drupal\mailmute\SendStateInterface $state
-   *   The new state of the address: FALSE for mute, TRUE for send.
+   * @param string $state
+   *   The plugin id of the new state of the address.
    */
-  public function setState($address, SendStateInterface $state);
+  public function setState($address, $state);
+
+  /**
+   * Returns whether messages to this address are muted.
+   *
+   * @param string $address
+   *   The mail address to check.
+   *
+   * @return bool
+   *   Whether messages to this address should be suppressed.
+   */
+  public function isMute($address);
 
 }

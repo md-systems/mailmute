@@ -13,8 +13,7 @@ function mailmute_mail_alter(&$message) {
   // @todo split based on RFC
   // @todo consider all observed formats incl Name <email>
   // @todo if multiple targets and some removed, add header X-Mailmute-To-Remove
-  $state = \Drupal::service('plugin.manager.sendstate')->getStatus($message['to']);
-  if ($state && $state->isMute()) {
+  if (\Drupal::service('plugin.manager.sendstate')->isMute($message['to'])) {
     $message['send'] = FALSE;
     drupal_set_message(t('Message to %mail suppressed.', array('%mail' => $message['to'])), 'warning');
   }

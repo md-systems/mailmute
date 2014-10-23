@@ -6,6 +6,7 @@
 
 namespace Drupal\mailmute;
 
+use Drupal\Component\Utility\String;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -19,24 +20,9 @@ use Drupal\Core\Plugin\DefaultPluginManager;
 class SendStateManager extends DefaultPluginManager implements SendStateManagerInterface {
 
   /**
-   * The value representing the 'Send' send state.
-   */
-  const STATE_SEND = 0;
-
-  /**
-   * The value representing the 'Mute' send state.
-   */
-  const STATE_MUTE = 1;
-
-  /**
    * @var \Drupal\Core\Entity\EntityManagerInterface
    */
   protected $entityManager;
-
-  /**
-   * @var \Drupal\mailmute\Plugin\Mailmute\SendState\SendStateManager
-   */
-  protected $sendstateManager;
 
   /**
    * Constructs a SendStateManager object.
@@ -48,16 +34,9 @@ class SendStateManager extends DefaultPluginManager implements SendStateManagerI
   }
 
   /**
-   * Get the send state for a given email.
-   *
-   * @param string $address
-   *   The email address that a mail is being sent to.
-   *
-   * @return \Drupal\mailmute\SendStateInterface
-   *   The current send state of the given email.
+   * {@inheritdoc}
    */
   public function getState($address) {
-    // @todo Handle multiple recipients.
     if ($field = $this->getField($address)) {
       return $this->createInstance($field->value);
     }
@@ -67,11 +46,27 @@ class SendStateManager extends DefaultPluginManager implements SendStateManagerI
   /**
    * {@inheritdoc}
    */
-  public function setState($address, SendStateInterface $state) {
+  public function setState($address, $state) {
     if ($field = $this->getField($address)) {
-      $field->setValue($state);
-      $field->getEntity()->save();
+      if ($this->hasDefinition($state)) {
+        $field->setValue($state);
+        $field->getEntity()->save();
+      }
+      else {
+        throw new \InvalidArgumentException(String::format('Unknown state "@state"', ['@state' => $state]));
+      }
     }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function isMute($address) {
+    if ($field = $this->getField($address)) {
+      $state = $this->createInstance($field->value);
+      return $state->isMute();
+    }
+    return FALSE;
   }
 
   /**
