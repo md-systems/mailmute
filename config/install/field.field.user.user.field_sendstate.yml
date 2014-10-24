@@ -1,7 +1,7 @@
 langcode: en
 status: true
 dependencies:
-  entity:
+  config:
     - field.storage.user.field_sendstate
 id: user.user.field_sendstate
 field_name: field_sendstate
