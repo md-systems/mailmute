@@ -3,6 +3,8 @@ status: true
 dependencies:
   config:
     - field.storage.user.field_sendstate
+  module:
+    - mailmute
 id: user.user.field_sendstate
 field_name: field_sendstate
 entity_type: user
@@ -17,4 +19,4 @@ default_value:
 default_value_callback: ''
 settings: {  }
 third_party_settings: {  }
-field_type: string
+field_type: sendstate
