@@ -7,7 +7,6 @@
 namespace Drupal\mailmute\Tests;
 
 use Drupal\Core\Language\LanguageInterface;
-use Drupal\simpletest\KernelTestBase;
 use Drupal\user\Entity\User;
 
 /**
@@ -15,19 +14,12 @@ use Drupal\user\Entity\User;
  *
  * @group mailmute
  */
-class MuteUserTest extends KernelTestBase {
+class MuteUserTest extends MailmuteKernelTestBase {
 
   /**
    * Modules to enable.
    */
   public static $modules = array('field', 'mailmute', 'user', 'system');
-
-  /**
-   * The mail manager.
-   *
-   * @var \Drupal\Core\Mail\MailManager
-   */
-  protected $mailManager;
 
   /**
    * {@inheritdoc}
@@ -39,7 +31,6 @@ class MuteUserTest extends KernelTestBase {
     $this->installEntitySchema('user');
     $this->installConfig(['mailmute', 'system']);
     \Drupal::config('system.site')->set('mail', 'admin@example.com')->save();
-    $this->mailManager = \Drupal::service('plugin.manager.mail');
   }
 
   /**
@@ -48,7 +39,7 @@ class MuteUserTest extends KernelTestBase {
   public function testStates() {
     // A Send state field should be added to User on install.
     $field_map = \Drupal::entityManager()->getFieldMap();
-    $this->assert($field_map['user']['field_sendstate']['type'] == 'string');
+    $this->assertEqual($field_map['user']['field_sendstate']['type'], 'sendstate');
 
     /** @var \Drupal\user\UserInterface $user */
     $user = $this->createUser();

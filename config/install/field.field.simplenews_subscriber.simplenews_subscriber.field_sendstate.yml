@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.simplenews_subscriber.field_sendstate
+  module:
+    - mailmute
+id: simplenews_subscriber.simplenews_subscriber.field_sendstate
+field_name: field_sendstate
+entity_type: simplenews_subscriber
+bundle: simplenews_subscriber
+label: 'Send emails'
+description: ''
+required: true
+translatable: false
+default_value:
+  -
+    value: send
+default_value_callback: ''
+settings: {  }
+third_party_settings: {  }
+field_type: sendstate
