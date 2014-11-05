@@ -15,6 +15,7 @@ namespace Drupal\mailmute\Plugin\Mailmute\SendState;
  * @SendState(
  *   id = "send",
  *   label = @Translation("Send"),
+ *   admin = false
  * )
  */
 class Send extends SendStateBase {

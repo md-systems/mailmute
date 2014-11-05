@@ -12,6 +12,7 @@ namespace Drupal\mailmute\Plugin\Mailmute\SendState;
  * @SendState(
  *   id = "onhold",
  *   label = @Translation("On hold"),
+ *   admin = false
  * )
  */
 class OnHold extends SendStateBase {

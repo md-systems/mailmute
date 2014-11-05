@@ -73,7 +73,7 @@ class SendStateItem extends FieldItemBase implements OptionsProviderInterface {
    * {@inheritdoc}
    */
   public function getPossibleValues(AccountInterface $account = NULL) {
-    // @todo Check permission.
+    // Return the plugin IDs of all states.
     return array_keys($this->sendstateDefinitions);
   }
 
@@ -81,7 +81,7 @@ class SendStateItem extends FieldItemBase implements OptionsProviderInterface {
    * {@inheritdoc}
    */
   public function getPossibleOptions(AccountInterface $account = NULL) {
-    // @todo Check permission.
+    // Return the labels of all states.
     return array_map(function($definition) {
       return $definition['label'];
     }, $this->sendstateDefinitions);
@@ -91,16 +91,62 @@ class SendStateItem extends FieldItemBase implements OptionsProviderInterface {
    * {@inheritdoc}
    */
   public function getSettableValues(AccountInterface $account = NULL) {
-    // @todo Check permission.
-    return $this->getPossibleValues();
+    // Filter states by access and return the plugin IDs.
+    return array_keys($this->getSettableSendStates($account));
   }
 
   /**
    * {@inheritdoc}
    */
   public function getSettableOptions(AccountInterface $account = NULL) {
-    // @todo Check permission.
-    return $this->getPossibleOptions();
+    // Filter states by access and return the labels.
+    return array_map(function($definition) {
+      return $definition['label'];
+    }, $this->getSettableSendStates($account));
+  }
+
+  /**
+   * Returns the send state definitions to which a given account has access.
+   *
+   * @param \Drupal\Core\Session\AccountInterface $account
+   *   The account.
+   *
+   * @return array
+   *   A subset of the state definitions.
+   */
+  protected function getSettableSendStates(AccountInterface $account) {
+    return array_filter(
+      $this->sendstateDefinitions,
+      function($sendstate) use ($account) {
+        return $this->hasChangeAccess($account, $sendstate);
+      }
+    );
+  }
+
+  /**
+   * Check that an account has access to change to a given send state.
+   *
+   * @param \Drupal\Core\Session\AccountInterface $account
+   *   The account.
+   * @param array $sendstate
+   *   The send state plugin definition.
+   *
+   * @return bool
+   *   Whether the account may set the send state.
+   */
+  protected function hasChangeAccess(AccountInterface $account, array $sendstate) {
+    // Keeping the current value is always allowed.
+    if ($this->getValue()['value'] == $sendstate['id']) {
+      return TRUE;
+    }
+
+    // The admin permission allows setting any state.
+    if ($account->hasPermission('administer send state')) {
+      return TRUE;
+    }
+
+    // At least the "change own send state" permission is required.
+    return isset($account) && empty($sendstate['admin']) && $account->hasPermission('change own send state');
   }
 
 }

@@ -6,10 +6,12 @@
 
 namespace Drupal\mailmute;
 
+use Drupal\Component\Plugin\PluginManagerInterface;
+
 /**
  * Provides methods to read and modify the Send State of single mail addresses.
  */
-interface SendStateManagerInterface {
+interface SendStateManagerInterface extends PluginManagerInterface {
 
   /**
    * Get the send state of an address.

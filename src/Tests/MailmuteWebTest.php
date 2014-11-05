@@ -20,7 +20,7 @@ class MailmuteWebTest extends WebTestBase {
    *
    * @var array
    */
-  public static $modules = array('mailmute', 'field_ui');
+  public static $modules = array('mailmute', 'mailmute_test', 'field_ui');
 
   /**
    * A test user with admin privileges.
@@ -39,6 +39,7 @@ class MailmuteWebTest extends WebTestBase {
       'administer user fields',
       'administer user display',
       'administer user form display',
+      'administer send state',
     ));
   }
 
@@ -50,11 +51,7 @@ class MailmuteWebTest extends WebTestBase {
     $this->drupalLogin($this->adminUser);
 
     // Enable the form and view display components.
-    $edit = array(
-      'fields[field_sendstate][type]' => 'sendstate',
-    );
-    $this->drupalPostForm('admin/config/people/accounts/form-display', $edit, 'Save');
-    $this->drupalPostForm('admin/config/people/accounts/display', $edit, 'Save');
+    $this->enableViewComponents();
 
     // Check the edit form.
     $this->drupalGet('user/' . $this->adminUser->id() . '/edit');
@@ -73,6 +70,33 @@ class MailmuteWebTest extends WebTestBase {
     $this->drupalGet('user');
     $this->assertText('Send emails');
     $this->assertText('On hold');
+  }
+
+  /**
+   * Test that some states require admin permission.
+   */
+  public function testAdminStates() {
+    // Log in admin user.
+    $this->drupalLogin($this->adminUser);
+
+    // Enable the form and view display components.
+    $this->enableViewComponents();
+
+    // Check that the admin state is selectable.
+    $this->drupalGet('user/' . $this->adminUser->id() . '/edit');
+    $xpath = "//select[@name='field_sendstate']//option[@value='admin_state']";
+    $this->assertFieldByXPath($xpath);
+
+    // Log in non-admin user.
+    $this->drupalLogout();
+    $user = $this->drupalCreateUser(array(
+      'change own send state',
+    ));
+    $this->drupalLogin($user);
+
+    // Check that the admin state is not selectable.
+    $this->drupalGet('user/' . $user->id() . '/edit');
+    $this->assertNoFieldByXPath($xpath);
   }
 
   /**
@@ -97,6 +121,17 @@ class MailmuteWebTest extends WebTestBase {
     $match_selected = isset($selected) ? ($selected ? ' and @selected' : ' and not(@selected)') : '';
     $xpath = "//select[@name='$select_field']//option[@value='$option_key'$match_selected]";
     $this->assertFieldByXPath($xpath, NULL, $message, $group);
+  }
+
+  /**
+   * Enable the form and view display components.
+   */
+  protected function enableViewComponents() {
+    $edit = array(
+      'fields[field_sendstate][type]' => 'sendstate',
+    );
+    $this->drupalPostForm('admin/config/people/accounts/form-display', $edit, 'Save');
+    $this->drupalPostForm('admin/config/people/accounts/display', $edit, 'Save');
   }
 
 }
