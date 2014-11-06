@@ -1,12 +1,13 @@
 <?php
 /**
  * @file
- * Contains \Drupal\mailmute\Tests\MailmuteSimplenewsTest.
+ * Contains \Drupal\mailmute_simplenews\Tests\MailmuteSimplenewsTest.
  */
 
-namespace Drupal\mailmute\Tests;
+namespace Drupal\mailmute_simplenews\Tests;
 
 use Drupal\Core\Language\LanguageInterface;
+use Drupal\mailmute\Tests\MailmuteKernelTestBase;
 use Drupal\simplenews\Entity\Subscriber;
 use Drupal\simplenews\Source\SourceTest;
 
@@ -24,6 +25,7 @@ class MailmuteSimplenewsTest extends MailmuteKernelTestBase {
     'simplenews',
     'field',
     'mailmute',
+    'mailmute_simplenews',
     'user',
     'system',
   );
@@ -36,7 +38,7 @@ class MailmuteSimplenewsTest extends MailmuteKernelTestBase {
     $this->installSchema('system', ['sequences']);
     $this->installEntitySchema('user');
     $this->installEntitySchema('simplenews_subscriber');
-    $this->installConfig(['mailmute', 'system']);
+    $this->installConfig(['mailmute', 'mailmute_simplenews', 'system']);
     \Drupal::config('system.site')->set('mail', 'admin@example.com')->save();
   }
 

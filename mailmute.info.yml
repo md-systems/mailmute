@@ -1,5 +1,5 @@
 name: Mailmute
 type: module
 description: Suppress sending mail to some users or subscribers. Suppression can be done manually, or automatically upon bounce messages.
-package: Mailmute
+package: Mail
 core: 8.x
