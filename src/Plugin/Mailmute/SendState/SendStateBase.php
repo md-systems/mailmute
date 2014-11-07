@@ -7,7 +7,7 @@
 namespace Drupal\mailmute\Plugin\Mailmute\SendState;
 
 use Drupal\Core\Plugin\PluginBase;
-use Drupal\mailmute\SendStateInterface;
+use Drupal\mailmute\Plugin\Mailmute\SendState\SendStateInterface;
 
 /**
  * A send state determines whether messages to an address should be suppressed.

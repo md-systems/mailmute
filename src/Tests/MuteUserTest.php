@@ -70,19 +70,19 @@ class MuteUserTest extends MailmuteKernelTestBase {
     $user = $this->createUser();
 
     $this->assertEqual($manager->getState($user->getEmail())->getPluginId(), 'send');
-    $this->assertFalse($manager->isMute($user->getEmail()));
+    $this->assertFalse($manager->getState($user->getEmail())->isMute());
 
     // Set state to On Hold.
     $manager->setState($user->getEmail(), 'onhold');
 
     $this->assertEqual($manager->getState($user->getEmail())->getPluginId(), 'onhold');
-    $this->assertTrue($manager->isMute($user->getEmail()));
+    $this->assertTrue($manager->getState($user->getEmail())->isMute());
 
     // Reload the user and assert that field persists.
     $user = User::load($user->id());
 
     $this->assertEqual($manager->getState($user->getEmail())->getPluginId(), 'onhold');
-    $this->assertTrue($manager->isMute($user->getEmail()));
+    $this->assertTrue($manager->getState($user->getEmail())->isMute());
   }
 
   /**

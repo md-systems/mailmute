@@ -16,12 +16,10 @@ interface SendStateManagerInterface extends PluginManagerInterface {
   /**
    * Get the send state of an address.
    *
-   * @todo Remove in favor of isMute()?
-   *
    * @param string $address
    *   The mail address whose state should be returned.
    *
-   * @return \Drupal\mailmute\SendStateInterface
+   * @return \Drupal\mailmute\Plugin\Mailmute\SendState\SendStateInterface
    *   The current state of the address.
    */
   public function getState($address);
@@ -35,17 +33,6 @@ interface SendStateManagerInterface extends PluginManagerInterface {
    *   The plugin id of the new state of the address.
    */
   public function setState($address, $state);
-
-  /**
-   * Returns whether messages to this address are muted.
-   *
-   * @param string $address
-   *   The mail address to check.
-   *
-   * @return bool
-   *   Whether messages to this address should be suppressed.
-   */
-  public function isMute($address);
 
   /**
    * Returns whether the manager manages send states for the given address.

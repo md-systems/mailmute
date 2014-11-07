@@ -6,6 +6,13 @@
 
 /**
  * Implements hook_mail_alter().
+ *
+ * This hook is where the muting happens. For every outgoing mail it looks up
+ * the Send State of the receiving address. If the state is muting, the message
+ * is suppressed.
+ *
+ * Suppression is done by setting @code $message['send'] @endcode to @code FALSE
+ * @endcode, so it could possibly later be "unsuppressed" by another module.
  */
 function mailmute_mail_alter(&$message) {
   // @todo Also check Cc, Bcc.
@@ -13,7 +20,8 @@ function mailmute_mail_alter(&$message) {
   // @todo split based on RFC
   // @todo consider all observed formats incl Name <email>
   // @todo if multiple targets and some removed, add header X-Mailmute-To-Remove
-  if (\Drupal::service('plugin.manager.sendstate')->isMute($message['to'])) {
+  $state = \Drupal::service('plugin.manager.sendstate')->getState($message['to']);
+  if (isset($state) && $state->isMute()) {
     $message['send'] = FALSE;
     drupal_set_message(t('Message to %mail suppressed.', array('%mail' => $message['to'])), 'warning');
   }

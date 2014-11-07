@@ -14,8 +14,6 @@ use Drupal\Core\Plugin\DefaultPluginManager;
 
 /**
  * Service for checking whether to suppress sending mail to some address.
- *
- * @todo Rename to SendStateManager
  */
 class SendStateManager extends DefaultPluginManager implements SendStateManagerInterface {
 
@@ -28,7 +26,7 @@ class SendStateManager extends DefaultPluginManager implements SendStateManagerI
    * Constructs a SendStateManager object.
    */
   public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler, EntityManagerInterface $entity_manager) {
-    parent::__construct('Plugin/Mailmute/SendState', $namespaces, $module_handler, '\Drupal\mailmute\SendStateInterface', '\Drupal\mailmute\Annotation\SendState');
+    parent::__construct('Plugin/Mailmute/SendState', $namespaces, $module_handler, '\Drupal\mailmute\Plugin\Mailmute\SendState\SendStateInterface', '\Drupal\mailmute\Annotation\SendState');
     $this->setCacheBackend($cache_backend, 'mailmute_sendstate');
     $this->entityManager = $entity_manager;
   }
@@ -56,17 +54,6 @@ class SendStateManager extends DefaultPluginManager implements SendStateManagerI
         throw new \InvalidArgumentException(String::format('Unknown state "@state"', ['@state' => $state]));
       }
     }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function isMute($address) {
-    if ($field = $this->getField($address)) {
-      $state = $this->createInstance($field->value);
-      return $state->isMute();
-    }
-    return FALSE;
   }
 
   /**

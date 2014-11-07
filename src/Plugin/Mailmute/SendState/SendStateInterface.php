@@ -1,17 +1,15 @@
 <?php
 /**
  * @file
- * Contains \Drupal\mailmute\SendStateInterface.
+ * Contains \Drupal\mailmute\Plugin\Mailmute\SendState\SendStateInterface.
  */
 
-namespace Drupal\mailmute;
+namespace Drupal\mailmute\Plugin\Mailmute\SendState;
 
 use Drupal\Component\Plugin\PluginInspectionInterface;
 
 /**
  * Provides methods to interact with a send state.
- *
- * @todo Move to Plugin\Mailmute\SendState
  */
 interface SendStateInterface extends PluginInspectionInterface {
 
