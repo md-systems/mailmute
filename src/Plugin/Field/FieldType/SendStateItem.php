@@ -51,6 +51,9 @@ class SendStateItem extends FieldItemBase implements OptionsProviderInterface {
     $properties['value'] = DataDefinition::create('string')
       ->setLabel(new TranslationWrapper('Send state plugin ID'));
 
+    $properties['data'] = DataDefinition::create('map')
+      ->setLabel(new TranslationWrapper('Additional state data'));
+
     return $properties;
   }
 
@@ -60,13 +63,30 @@ class SendStateItem extends FieldItemBase implements OptionsProviderInterface {
   public static function schema(FieldStorageDefinitionInterface $field_definition) {
     return array(
       'columns' => array(
+        // @todo Change to "plugin" or something else more specific?
         'value' => array(
           'type' => 'varchar',
           'length' => (int) $field_definition->getSetting('max_length'),
+          'not null' => TRUE,
+        ),
+        // The "data" column stores the plugin configuration, i.e. additional
+        // information about the state.
+        'data' => array(
+          'type' => 'text',
           'not null' => FALSE,
         ),
       ),
     );
+  }
+
+  /**
+   * Returns an instance of the plugin, with configuration from field values.
+   *
+   * @return \Drupal\mailmute\Plugin\Mailmute\SendState\SendStateInterface
+   *   The send state plugin referenced by the value of this field.
+   */
+  public function getPlugin() {
+    return \Drupal::service('plugin.manager.sendstate')->createInstance($this->value, $this->data ?: array());
   }
 
   /**
@@ -136,7 +156,7 @@ class SendStateItem extends FieldItemBase implements OptionsProviderInterface {
    */
   protected function hasChangeAccess(AccountInterface $account, array $sendstate) {
     // Keeping the current value is always allowed.
-    if ($this->getValue()['value'] == $sendstate['id']) {
+    if (isset($this->value) && $this->value == $sendstate['id']) {
       return TRUE;
     }
 

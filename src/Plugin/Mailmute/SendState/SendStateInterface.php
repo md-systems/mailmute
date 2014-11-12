@@ -21,4 +21,20 @@ interface SendStateInterface extends PluginInspectionInterface {
    */
   public function isMute();
 
+  /**
+   * Render the state for display.
+   *
+   * @return array
+   *   A render array with human-readable information of the state.
+   */
+  public function display();
+
+  /**
+   * Render form elements for state data.
+   *
+   * @return array
+   *   A form render array for the state.
+   */
+  public function form();
+
 }

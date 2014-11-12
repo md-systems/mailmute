@@ -6,6 +6,7 @@
 
 namespace Drupal\mailmute;
 
+use Drupal\Component\Plugin\FallbackPluginManagerInterface;
 use Drupal\Component\Utility\String;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Entity\EntityManagerInterface;
@@ -15,7 +16,7 @@ use Drupal\Core\Plugin\DefaultPluginManager;
 /**
  * Service for checking whether to suppress sending mail to some address.
  */
-class SendStateManager extends DefaultPluginManager implements SendStateManagerInterface {
+class SendStateManager extends DefaultPluginManager implements SendStateManagerInterface, FallbackPluginManagerInterface {
 
   /**
    * @var \Drupal\Core\Entity\EntityManagerInterface
@@ -35,7 +36,8 @@ class SendStateManager extends DefaultPluginManager implements SendStateManagerI
    * {@inheritdoc}
    */
   public function getState($address) {
-    if ($field = $this->getField($address)) {
+    $field = $this->getField($address);
+    if (isset($field->value)) {
       return $this->createInstance($field->value);
     }
     return NULL;
@@ -94,5 +96,12 @@ class SendStateManager extends DefaultPluginManager implements SendStateManagerI
     // There may be multiple entities with the given email. Return NULL only if
     // none of them has the send state field.
     return NULL;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getFallbackPluginId($plugin_id, array $configuration = array()) {
+    return 'send';
   }
 }

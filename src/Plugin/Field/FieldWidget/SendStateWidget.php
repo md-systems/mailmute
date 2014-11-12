@@ -29,16 +29,17 @@ class SendStateWidget extends OptionsWidgetBase {
    * {@inheritdoc}
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
-    $element = parent::formElement($items, $delta, $element, $form, $form_state);
+    /** @var \Drupal\mailmute\Plugin\Mailmute\SendState\SendStateInterface $plugin */
+    $plugin = $items->first()->getPlugin();
 
-    $default_value = $items->getFieldDefinition()->getDefaultValue($items->getEntity())[0];
-    $element += array(
-      '#type' => 'select',
-      '#options' => $this->getOptions($items->getEntity()),
-      '#default_value' => $this->getSelectedOptions($items, $delta) ?: $default_value,
+    return array(
+      'value' => array(
+        '#type' => 'select',
+        '#options' => $this->getOptions($items->getEntity()),
+        '#default_value' => $plugin->getPluginId(),
+      ),
+      'data' => $plugin->form(),
     );
-
-    return $element;
   }
 
   /**
