@@ -30,7 +30,7 @@ interface SendStateInterface extends PluginInspectionInterface {
   public function display();
 
   /**
-   * Render form elements for state data.
+   * Render form elements for state configuration.
    *
    * @return array
    *   A form render array for the state.

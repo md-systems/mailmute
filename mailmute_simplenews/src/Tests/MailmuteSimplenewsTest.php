@@ -56,15 +56,15 @@ class MailmuteSimplenewsTest extends MailmuteKernelTestBase {
       'mail' => "$name@example.com",
     ));
 
-    // Default value should be send.
-    $this->assertEqual($subscriber->field_sendstate->value, 'send');
+    // Default plugin_id should be send.
+    $this->assertEqual($subscriber->field_sendstate->plugin_id, 'send');
 
     // Mails should be sent normally.
     $sent = $this->mail($subscriber);
     $this->assertTrue($sent);
 
-    // When value is onhold, mails should not be sent.
-    $subscriber->field_sendstate->value = 'onhold';
+    // When plugin_id is onhold, mails should not be sent.
+    $subscriber->field_sendstate->plugin_id = 'onhold';
     $subscriber->save();
     $sent = $this->mail($subscriber);
     $this->assertFalse($sent);

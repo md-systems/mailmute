@@ -44,15 +44,15 @@ class MuteUserTest extends MailmuteKernelTestBase {
     /** @var \Drupal\user\UserInterface $user */
     $user = $this->createUser();
 
-    // Default value should be send.
-    $this->assertEqual($user->field_sendstate->value, 'send');
+    // Default plugin_id should be send.
+    $this->assertEqual($user->field_sendstate->plugin_id, 'send');
 
     // Mails should be sent normally.
     $sent = $this->mail($user);
     $this->assertTrue($sent);
 
-    // When value is onhold, mails should not be sent.
-    $user->field_sendstate->value = 'onhold';
+    // When plugin_id is onhold, mails should not be sent.
+    $user->field_sendstate->plugin_id = 'onhold';
     $user->save();
     $sent = $this->mail($user);
     $this->assertFalse($sent);

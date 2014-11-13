@@ -33,12 +33,12 @@ class SendStateWidget extends OptionsWidgetBase {
     $plugin = $items->first()->getPlugin();
 
     return array(
-      'value' => array(
+      'plugin_id' => array(
         '#type' => 'select',
         '#options' => $this->getOptions($items->getEntity()),
         '#default_value' => $plugin->getPluginId(),
       ),
-      'data' => $plugin->form(),
+      'configuration' => $plugin->form(),
     );
   }
 

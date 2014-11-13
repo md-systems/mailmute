@@ -37,8 +37,8 @@ class SendStateManager extends DefaultPluginManager implements SendStateManagerI
    */
   public function getState($address) {
     $field = $this->getField($address);
-    if (isset($field->value)) {
-      return $this->createInstance($field->value);
+    if (isset($field->plugin_id)) {
+      return $this->createInstance($field->plugin_id);
     }
     return NULL;
   }

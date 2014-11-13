@@ -62,8 +62,8 @@ class SendStateFormatter extends FormatterBase implements ContainerFactoryPlugin
    */
   public function viewElements(FieldItemListInterface $items) {
     // Let the plugin take care of rendering.
-    $configuration = unserialize($items->data) ?: array();
-    $sendstate = $this->sendstateManager->createInstance($items->value, $configuration);
+    $configuration = unserialize($items->configuration) ?: array();
+    $sendstate = $this->sendstateManager->createInstance($items->plugin_id, $configuration);
     return array($sendstate->display());
   }
 

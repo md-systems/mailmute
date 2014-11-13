@@ -48,11 +48,11 @@ class SendStateItem extends FieldItemBase implements OptionsProviderInterface {
    * {@inheritdoc}
    */
   public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition) {
-    $properties['value'] = DataDefinition::create('string')
-      ->setLabel(new TranslationWrapper('Send state plugin ID'));
+    $properties['plugin_id'] = DataDefinition::create('string')
+      ->setLabel(new TranslationWrapper('The ID of a SendState plugin'));
 
-    $properties['data'] = DataDefinition::create('map')
-      ->setLabel(new TranslationWrapper('Additional state data'));
+    $properties['configuration'] = DataDefinition::create('map')
+      ->setLabel(new TranslationWrapper('Serialized plugin configuration, with a structure matching the referenced plugin'));
 
     return $properties;
   }
@@ -63,17 +63,18 @@ class SendStateItem extends FieldItemBase implements OptionsProviderInterface {
   public static function schema(FieldStorageDefinitionInterface $field_definition) {
     return array(
       'columns' => array(
-        // @todo Change to "plugin" or something else more specific?
-        'value' => array(
+        // The columns reference a SendState plugin ID and configuration.
+        'plugin_id' => array(
+          'description' => 'The ID of a SendState plugin',
           'type' => 'varchar',
-          'length' => (int) $field_definition->getSetting('max_length'),
+          'length' => 255,
           'not null' => TRUE,
         ),
-        // The "data" column stores the plugin configuration, i.e. additional
-        // information about the state.
-        'data' => array(
-          'type' => 'text',
-          'not null' => FALSE,
+        'configuration' => array(
+          'description' => 'Serialized plugin configuration, with a structure matching the referenced plugin',
+          'type' => 'blob',
+          'serialize' => TRUE,
+          'not null' => TRUE,
         ),
       ),
     );
@@ -83,10 +84,11 @@ class SendStateItem extends FieldItemBase implements OptionsProviderInterface {
    * Returns an instance of the plugin, with configuration from field values.
    *
    * @return \Drupal\mailmute\Plugin\Mailmute\SendState\SendStateInterface
-   *   The send state plugin referenced by the value of this field.
+   *   The send state plugin referenced by the plugin_id of this field.
    */
   public function getPlugin() {
-    return \Drupal::service('plugin.manager.sendstate')->createInstance($this->value, $this->data ?: array());
+    $configuration = unserialize($this->configuration) ?: array();
+    return \Drupal::service('plugin.manager.sendstate')->createInstance($this->plugin_id, $configuration ?: array());
   }
 
   /**
@@ -155,8 +157,8 @@ class SendStateItem extends FieldItemBase implements OptionsProviderInterface {
    *   Whether the account may set the send state.
    */
   protected function hasChangeAccess(AccountInterface $account, array $sendstate) {
-    // Keeping the current value is always allowed.
-    if (isset($this->value) && $this->value == $sendstate['id']) {
+    // Keeping the current plugin_id is always allowed.
+    if (isset($this->plugin_id) && $this->plugin_id == $sendstate['id']) {
       return TRUE;
     }
 
@@ -167,6 +169,13 @@ class SendStateItem extends FieldItemBase implements OptionsProviderInterface {
 
     // At least the "change own send state" permission is required.
     return isset($account) && empty($sendstate['admin']) && $account->hasPermission('change own send state');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function mainPropertyName() {
+    return 'plugin_id';
   }
 
 }

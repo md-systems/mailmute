@@ -15,7 +15,8 @@ required: true
 translatable: false
 default_value:
   -
-    value: send
+    plugin_id: send
+    configuration: a:0:{}
 default_value_callback: ''
 settings: {  }
 third_party_settings: {  }
