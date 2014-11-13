@@ -18,13 +18,4 @@ use Drupal\mailmute\Plugin\Mailmute\SendState\SendStateBase;
  * )
  */
 class AdminState extends SendStateBase {
-
-  /**
-   * {@inheritdoc}
-   */
-  public function isMute() {
-    // Does not matter.
-    return TRUE;
-  }
-
 }

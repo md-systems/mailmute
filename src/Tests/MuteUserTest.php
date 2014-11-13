@@ -73,7 +73,7 @@ class MuteUserTest extends MailmuteKernelTestBase {
     $this->assertFalse($manager->getState($user->getEmail())->isMute());
 
     // Set state to On Hold.
-    $manager->setState($user->getEmail(), 'onhold');
+    $manager->transition($user->getEmail(), 'onhold');
 
     $this->assertEqual($manager->getState($user->getEmail())->getPluginId(), 'onhold');
     $this->assertTrue($manager->getState($user->getEmail())->isMute());
@@ -83,6 +83,24 @@ class MuteUserTest extends MailmuteKernelTestBase {
 
     $this->assertEqual($manager->getState($user->getEmail())->getPluginId(), 'onhold');
     $this->assertTrue($manager->getState($user->getEmail())->isMute());
+
+    // Set a state attribute (plugin configuration) by getState() and save().
+    $configuration = array($this->randomMachineName() => $this->randomMachineName());
+    $state = $manager->getState($user->getEmail());
+    $state->setConfiguration($configuration);
+    $manager->save($user->getEmail());
+
+    $this->assertEqual($manager->getState($user->getEmail())->getConfiguration(), $configuration);
+    $user = User::load($user->id());
+    $this->assertEqual($user->field_sendstate->first()->getPlugin()->getConfiguration(), $configuration);
+
+    // Set a state attribute (plugin configuration) by transition().
+    $configuration = array($this->randomMachineName() => $this->randomMachineName());
+    $manager->transition($user->getEmail(), 'send', $configuration);
+
+    $this->assertEqual($manager->getState($user->getEmail())->getConfiguration(), $configuration);
+    $user = User::load($user->id());
+    $this->assertEqual($user->field_sendstate->first()->getPlugin()->getConfiguration(), $configuration);
   }
 
   /**

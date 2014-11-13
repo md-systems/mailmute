@@ -14,6 +14,7 @@ use Drupal\Core\TypedData\DataDefinition;
 use Drupal\Core\TypedData\DataDefinitionInterface;
 use Drupal\Core\TypedData\OptionsProviderInterface;
 use Drupal\Core\TypedData\TypedDataInterface;
+use Drupal\mailmute\Plugin\Mailmute\SendState\SendStateInterface;
 
 /**
  * The 'sendstate' entity field type references a send state plugin.
@@ -87,8 +88,7 @@ class SendStateItem extends FieldItemBase implements OptionsProviderInterface {
    *   The send state plugin referenced by the plugin_id of this field.
    */
   public function getPlugin() {
-    $configuration = unserialize($this->configuration) ?: array();
-    return \Drupal::service('plugin.manager.sendstate')->createInstance($this->plugin_id, $configuration ?: array());
+    return \Drupal::service('plugin.manager.sendstate')->createInstance($this->plugin_id, (array) $this->configuration);
   }
 
   /**

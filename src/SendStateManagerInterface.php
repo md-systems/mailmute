@@ -7,6 +7,7 @@
 namespace Drupal\mailmute;
 
 use Drupal\Component\Plugin\PluginManagerInterface;
+use Drupal\mailmute\Plugin\Mailmute\SendState\SendStateInterface;
 
 /**
  * Provides methods to read and modify the Send State of single mail addresses.
@@ -25,14 +26,24 @@ interface SendStateManagerInterface extends PluginManagerInterface {
   public function getState($address);
 
   /**
-   * Set the state of an address.
+   * Save the previously loaded send state for the given address.
    *
    * @param string $address
-   *   The mail address whose state should be set.
-   * @param string $state
-   *   The plugin id of the new state of the address.
+   *   An email address.
    */
-  public function setState($address, $state);
+  public function save($address);
+
+  /**
+   * Instantiate the plugin of a new state and save it for the given address.
+   *
+   * @param string $address
+   *   An email address.
+   * @param string $plugin_id
+   *   The ID of a state plugin.
+   * @param array $configuration
+   *   Configuration for the state plugin.
+   */
+  public function transition($address, $plugin_id, array $configuration = array());
 
   /**
    * Returns whether the manager manages send states for the given address.
