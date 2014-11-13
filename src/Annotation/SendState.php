@@ -30,6 +30,13 @@ class SendState extends Plugin {
   public $label;
 
   /**
+   * Whether to suppress messages to addresses with this state.
+   *
+   * @var bool
+   */
+  public $mute;
+
+  /**
    * Whether an administrative permission is required to set the state manually.
    *
    * @var bool

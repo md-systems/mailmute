@@ -15,16 +15,9 @@ namespace Drupal\mailmute\Plugin\Mailmute\SendState;
  * @SendState(
  *   id = "send",
  *   label = @Translation("Send"),
+ *   mute = false,
  *   admin = false
  * )
  */
 class Send extends SendStateBase {
-
-  /**
-   * {@inheritdoc}
-   */
-  public function isMute() {
-    return FALSE;
-  }
-
 }
