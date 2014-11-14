@@ -4,6 +4,52 @@
  * Main procedural code for the Mailmute module.
  */
 
+/**
+ * @mainpage
+ * The purpose of the Mailmute module is to suppress all mail sent from the
+ * website to certain addresses. The suppression, which happens in
+ * mailmute_mail_alter(), is conditional on a so-called sendstate which is
+ * defined for each address. The sendstate is implemented as a field on the User
+ * entity, with a reference to a plugin defining the actual state.
+ *
+ *   - @link plugin Sendstate plugins @endlink
+ *   - @link field The sendstate field @endlink
+ */
+
+/**
+ * @defgroup plugin Sendstate plugins
+ * @{
+ * The states are represented by plugins of the type SendState. This module
+ * provides two basic states: Send and On hold. The Send state is selected by
+ * default and does not mute, while the On hold state does mute.
+ *
+ * Being plugins, the states are easily extensible. Other modules may define new
+ * states as needed.
+ *
+ * Every state plugin declares whether it is muting or not (i.e. whether
+ * messages to an address in that state should be suppressed). It may also
+ * declare other information to contain, as well as provide rendering for
+ * display.
+ * @}
+ */
+
+/**
+ * @defgroup field The sendstate field
+ * @{
+ * The Send State is an entity field that should be present on every entity that
+ * represents a receiver of mail. By default, the field is added to the User
+ * entity. If you use the Simplenews newsletter module, please additionally
+ * enable the mailmute_simplenews submodule, which also adds the field to the
+ * Subscriber entity.
+ *
+ * In theory, a send state is a property of an email address, not a user or
+ * subscriber per se. It could be argued that the state should thus be stored
+ * separately from the entity, e.g. in a SQL table directly keyed by address. A
+ * field-based model is however preferred to leverage the Entity API and to
+ * avoid excessive custom schema definitions.
+ * @}
+ */
+
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
 
@@ -14,8 +60,8 @@ use Drupal\Core\Entity\EntityInterface;
  * the Send State of the receiving address. If the state is muting, the message
  * is suppressed.
  *
- * Suppression is done by setting @code $message['send'] @endcode to @code FALSE
- * @endcode, so it could possibly later be "unsuppressed" by another module.
+ * Suppression is done by setting $message['send'] to FALSE. Note that this
+ * means that it could possibly later be "unsuppressed" by another module.
  */
 function mailmute_mail_alter(&$message) {
   // @todo Also check Cc, Bcc.
@@ -34,6 +80,8 @@ function mailmute_mail_alter(&$message) {
  * Implements hook_ENTITY_TYPE_view_alter().
  *
  * Hides the send state field unless user has access.
+ *
+ * @ingroup field
  */
 function mailmute_user_view_alter(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display) {
   $user = \Drupal::currentUser();

@@ -16,6 +16,12 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Formatter for the 'sendstate' entity field.
  *
+ * Rendering is delegated to
+ * \Drupal\mailmute\Plugin\Mailmute\SendState\SendStateInterface::display() on
+ * the plugin referenced by the field value.
+ *
+ * @ingroup field
+ *
  * @FieldFormatter(
  *   id = "sendstate",
  *   label = @Translation("Send state"),

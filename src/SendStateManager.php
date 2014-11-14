@@ -12,10 +12,11 @@ use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
-use Drupal\mailmute\Plugin\Mailmute\SendState\SendStateInterface;
 
 /**
  * Service for checking whether to suppress sending mail to some address.
+ *
+ * @ingroup plugin
  */
 class SendStateManager extends DefaultPluginManager implements SendStateManagerInterface, FallbackPluginManagerInterface {
 

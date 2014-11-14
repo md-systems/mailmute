@@ -11,6 +11,8 @@ use Drupal\Component\Plugin\PluginInspectionInterface;
 
 /**
  * Provides methods to interact with a send state.
+ *
+ * @ingroup plugin
  */
 interface SendStateInterface extends PluginInspectionInterface, ConfigurablePluginInterface {
 

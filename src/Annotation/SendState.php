@@ -11,6 +11,8 @@ use Drupal\Component\Annotation\Plugin;
 /**
  * Annotation for the definition of a send state.
  *
+ * @ingroup plugin
+ *
  * @Annotation
  */
 class SendState extends Plugin {

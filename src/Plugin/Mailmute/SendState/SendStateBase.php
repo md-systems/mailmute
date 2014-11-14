@@ -10,6 +10,10 @@ use Drupal\Core\Plugin\PluginBase;
 
 /**
  * A send state determines whether messages to an address should be suppressed.
+ *
+ * This provides dumb implementations for all methods.
+ *
+ * @ingroup plugin
  */
 abstract class SendStateBase extends PluginBase implements SendStateInterface {
 

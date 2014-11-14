@@ -14,6 +14,8 @@ use Drupal\Core\Form\FormStateInterface;
 /**
  * Select widget for the 'sendstate' entity field.
  *
+ * @ingroup field
+ *
  * @FieldWidget(
  *   id = "sendstate",
  *   label = @Translation("Send state"),

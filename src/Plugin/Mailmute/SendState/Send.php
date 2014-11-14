@@ -12,6 +12,8 @@ namespace Drupal\mailmute\Plugin\Mailmute\SendState;
  * This is the default state and is equivalent to not applying send states at
  * all.
  *
+ * @ingroup plugin
+ *
  * @SendState(
  *   id = "send",
  *   label = @Translation("Send"),

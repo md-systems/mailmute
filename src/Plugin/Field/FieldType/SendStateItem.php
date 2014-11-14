@@ -14,10 +14,11 @@ use Drupal\Core\TypedData\DataDefinition;
 use Drupal\Core\TypedData\DataDefinitionInterface;
 use Drupal\Core\TypedData\OptionsProviderInterface;
 use Drupal\Core\TypedData\TypedDataInterface;
-use Drupal\mailmute\Plugin\Mailmute\SendState\SendStateInterface;
 
 /**
  * The 'sendstate' entity field type references a send state plugin.
+ *
+ * @ingroup field
  *
  * @FieldType(
  *   id = "sendstate",
