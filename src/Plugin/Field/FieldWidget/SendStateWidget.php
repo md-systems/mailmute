@@ -32,14 +32,17 @@ class SendStateWidget extends OptionsWidgetBase {
     /** @var \Drupal\mailmute\Plugin\Mailmute\SendState\SendStateInterface $plugin */
     $plugin = $items->first()->getPlugin();
 
-    return array(
-      'plugin_id' => array(
-        '#type' => 'select',
-        '#options' => $this->getOptions($items->getEntity()),
-        '#default_value' => $plugin->getPluginId(),
-      ),
-      'configuration' => $plugin->form(),
+    $element['#type'] = 'details';
+    $element['plugin_id'] = array(
+      '#type' => 'select',
+      '#title' => $this->t('State'),
+      '#description' => $this->t('The <dfn>send state</dfn> determines whether email should be stopped form being sent from the website to the associated address.'),
+      '#options' => $this->getOptions($items->getEntity()),
+      '#default_value' => $plugin->getPluginId(),
     );
+    $element['configuration'] = $plugin->form();
+
+    return $element;
   }
 
   /**

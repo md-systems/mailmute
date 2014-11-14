@@ -63,7 +63,12 @@ class SendStateFormatter extends FormatterBase implements ContainerFactoryPlugin
   public function viewElements(FieldItemListInterface $items) {
     // Let the plugin take care of rendering.
     $sendstate = $this->sendstateManager->createInstance($items->plugin_id, (array) $items->configuration);
-    return array($sendstate->display());
+    $elements = $sendstate->display();
+
+    // Only show if user has admin permission.
+    $elements['#access'] = \Drupal::currentUser()->hasPermission('administer send state');
+
+    return array($elements);
   }
 
 }
