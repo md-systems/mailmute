@@ -32,6 +32,13 @@ class SendState extends Plugin {
   public $label;
 
   /**
+   * A brief description of this state.
+   *
+   * @var string
+   */
+  public $description;
+
+  /**
    * Whether to suppress messages to addresses with this state.
    *
    * @var bool

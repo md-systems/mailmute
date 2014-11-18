@@ -130,4 +130,58 @@ class SendStateManager extends DefaultPluginManager implements SendStateManagerI
   public function getFallbackPluginId($plugin_id, array $configuration = array()) {
     return 'send';
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getPluginIdHierarchy() {
+    $definitions = $this->getDefinitions();
+    $hierarchy = array();
+
+    // Move each ID from $definitions to its parent in the hierarchy. If the
+    // parent is not yet added, leave it in $definitions until next iteration.
+    while (!empty($definitions)) {
+      $hierarchy_changed = FALSE;
+      foreach ($definitions as $key => $definition) {
+        if ($this->addToHierarchy($hierarchy, $definition)) {
+          // Added to hierarchy, so remove from list.
+          unset ($definitions[$key]);
+          $hierarchy_changed = TRUE;
+        }
+      }
+      if (!$hierarchy_changed) {
+        // If there are definitions that cannot be moved because of invalid
+        // parent_id, break to avoid infinite loop.
+        break;
+      }
+    }
+
+    return $hierarchy;
+  }
+
+  /**
+   * Recursive helper method for getPluginIdHierarchy().
+   */
+  protected function addToHierarchy(&$array, $definition) {
+    if (empty($definition['parent_id'])) {
+      // Add orphans to top level.
+      $array[$definition['id']] = array();
+      return TRUE;
+    }
+    elseif (array_key_exists($definition['parent_id'], $array)) {
+      // Add child to found parent.
+      $array[$definition['parent_id']][$definition['id']] = array();
+      return TRUE;
+    }
+    else {
+      // Try adding to children.
+      foreach ($array as &$child_array) {
+        if ($this->addToHierarchy($child_array, $definition['parent_id'], $definition['id'])) {
+          return TRUE;
+        }
+      }
+      return FALSE;
+    }
+  }
+
 }

@@ -14,6 +14,7 @@ namespace Drupal\mailmute\Plugin\Mailmute\SendState;
  * @SendState(
  *   id = "onhold",
  *   label = @Translation("On hold"),
+ *   description = @Translation("The address owner requested muting until further notice."),
  *   mute = true,
  *   admin = false
  * )

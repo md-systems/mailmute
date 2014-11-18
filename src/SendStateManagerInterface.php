@@ -57,4 +57,13 @@ interface SendStateManagerInterface extends PluginManagerInterface {
    */
   public function isManaged($address);
 
+  /**
+   * Returns the send state plugin IDs in a hierarchical structure.
+   *
+   * @return array
+   *   A nested array containing IDs of all plugins as keys, and their children
+   *   (as deduced by the parent_id config property) as values.
+   */
+  public function getPluginIdHierarchy();
+
 }

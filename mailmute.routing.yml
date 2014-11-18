@@ -1,0 +1,7 @@
+mailmute.sendstate_list:
+  path: admin/config/people/mailmute/sendstates
+  defaults:
+    _content: Drupal\mailmute\Controller\MailmuteController::sendstateList
+    _title: Send states
+  requirements:
+    _permission: administer send state

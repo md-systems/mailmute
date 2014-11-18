@@ -17,6 +17,7 @@ namespace Drupal\mailmute\Plugin\Mailmute\SendState;
  * @SendState(
  *   id = "send",
  *   label = @Translation("Send"),
+ *   description = @Translation("Messages are not suppressed. This is the default state."),
  *   mute = false,
  *   admin = false
  * )
