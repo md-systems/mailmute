@@ -176,7 +176,7 @@ class SendStateManager extends DefaultPluginManager implements SendStateManagerI
     else {
       // Try adding to children.
       foreach ($array as &$child_array) {
-        if ($this->addToHierarchy($child_array, $definition['parent_id'], $definition['id'])) {
+        if ($this->addToHierarchy($child_array, $definition)) {
           return TRUE;
         }
       }
