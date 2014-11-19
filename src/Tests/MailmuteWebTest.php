@@ -23,24 +23,11 @@ class MailmuteWebTest extends WebTestBase {
   public static $modules = array('mailmute', 'mailmute_test', 'field_ui');
 
   /**
-   * A test user with admin privileges.
-   *
-   * @var \Drupal\user\UserInterface
-   */
-  protected $adminUser;
-
-  /**
    * {@inheritdoc}
    */
   protected function setUp() {
     parent::setUp();
 
-    $this->adminUser = $this->drupalCreateUser(array(
-      'administer user fields',
-      'administer user display',
-      'administer user form display',
-      'administer send state',
-    ));
   }
 
   /**
@@ -48,13 +35,11 @@ class MailmuteWebTest extends WebTestBase {
    */
   public function testField() {
     // Log in admin.
-    $this->drupalLogin($this->adminUser);
-
-    // Enable the form and view display components.
-    $this->enableViewComponents();
+    $admin = $this->drupalCreateUser(array('administer send state'));
+    $this->drupalLogin($admin);
 
     // Check the edit form.
-    $this->drupalGet('user/' . $this->adminUser->id() . '/edit');
+    $this->drupalGet('user/' . $admin->id() . '/edit');
     $this->assertField('field_sendstate[plugin_id]', 'Send state field found on user form');
     $this->assertOption('field_sendstate[plugin_id]', 'onhold', NULL, '"On hold" option found on user form');
     $this->assertOption('field_sendstate[plugin_id]', 'send', NULL, '"Send" option found on user form');
@@ -77,26 +62,40 @@ class MailmuteWebTest extends WebTestBase {
    */
   public function testAdminStates() {
     // Log in admin user.
-    $this->drupalLogin($this->adminUser);
-
-    // Enable the form and view display components.
-    $this->enableViewComponents();
+    $admin = $this->drupalCreateUser(array('administer send state'));
+    $this->drupalLogin($admin);
 
     // Check that the admin state is selectable.
-    $this->drupalGet('user/' . $this->adminUser->id() . '/edit');
+    $this->drupalGet('user/' . $admin->id() . '/edit');
     $xpath = "//select[@name='field_sendstate[plugin_id]']//option[@value='admin_state']";
     $this->assertFieldByXPath($xpath);
 
     // Log in non-admin user.
     $this->drupalLogout();
-    $user = $this->drupalCreateUser(array(
-      'change own send state',
-    ));
+    $user = $this->drupalCreateUser(array('change own send state'));
     $this->drupalLogin($user);
 
     // Check that the admin state is not selectable.
     $this->drupalGet('user/' . $user->id() . '/edit');
     $this->assertNoFieldByXPath($xpath);
+  }
+
+  /**
+   * Test the send state overview page.
+   */
+  public function testStatesOverview() {
+    $admin = $this->drupalCreateUser(array('administer send state'));
+    $this->drupalLogin($admin);
+    $this->drupalGet('admin/config/people/mailmute/sendstates');
+
+    $this->assertText('On hold');
+    $this->assertText('The address owner requested muting until further notice.');
+
+    $this->assertText('Send');
+    $this->assertText('Messages are not suppressed. This is the default state.');
+
+    // The test state has Send as parent, and should be indented.
+    $this->assertRaw('<div class="indentation">&nbsp;</div>Admin state');
   }
 
   /**
@@ -121,17 +120,6 @@ class MailmuteWebTest extends WebTestBase {
     $match_selected = isset($selected) ? ($selected ? ' and @selected' : ' and not(@selected)') : '';
     $xpath = "//select[@name='$select_field']//option[@value='$option_key'$match_selected]";
     $this->assertFieldByXPath($xpath, NULL, $message, $group);
-  }
-
-  /**
-   * Enable the form and view display components.
-   */
-  protected function enableViewComponents() {
-    $edit = array(
-      'fields[field_sendstate][type]' => 'sendstate',
-    );
-    $this->drupalPostForm('admin/config/people/accounts/form-display', $edit, 'Save');
-    $this->drupalPostForm('admin/config/people/accounts/display', $edit, 'Save');
   }
 
 }

@@ -14,7 +14,10 @@ use Drupal\mailmute\Plugin\Mailmute\SendState\SendStateBase;
  * @SendState(
  *   id = "admin_state",
  *   label = "Admin state",
- *   admin = true
+ *   description = "Used for testing.",
+ *   mute = false,
+ *   admin = true,
+ *   parent_id = "send"
  * )
  */
 class AdminState extends SendStateBase {
