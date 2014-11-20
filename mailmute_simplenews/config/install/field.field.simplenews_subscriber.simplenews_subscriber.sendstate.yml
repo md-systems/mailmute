@@ -2,13 +2,13 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.user.field_sendstate
+    - field.storage.simplenews_subscriber.sendstate
   module:
     - mailmute
-id: user.user.field_sendstate
-field_name: field_sendstate
-entity_type: user
-bundle: user
+id: simplenews_subscriber.simplenews_subscriber.sendstate
+field_name: sendstate
+entity_type: simplenews_subscriber
+bundle: simplenews_subscriber
 label: 'Send emails'
 description: ''
 required: true

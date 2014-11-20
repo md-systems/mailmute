@@ -1,12 +1,12 @@
 <?php
 /**
  * @file
- * Contains \Drupal\mailmute_test\Plugin\Mailmute\SendState\AdminState.
+ * Contains \Drupal\mailmute_test\Plugin\mailmute\SendState\AdminState.
  */
 
-namespace Drupal\mailmute_test\Plugin\Mailmute\SendState;
+namespace Drupal\mailmute_test\Plugin\mailmute\SendState;
 
-use Drupal\mailmute\Plugin\Mailmute\SendState\SendStateBase;
+use Drupal\mailmute\Plugin\mailmute\SendState\SendStateBase;
 
 /**
  * A send state that requires admin permission to be set.

@@ -48,7 +48,7 @@ class MailmuteSimplenewsTest extends MailmuteKernelTestBase {
   public function testStates() {
     // A Send state field should be added to Subscriber on install.
     $field_map = \Drupal::entityManager()->getFieldMap();
-    $this->assertEqual($field_map['simplenews_subscriber']['field_sendstate']['type'], 'sendstate');
+    $this->assertEqual($field_map['simplenews_subscriber']['sendstate']['type'], 'sendstate');
 
     $name = $this->randomMachineName();
     /** @var \Drupal\simplenews\Entity\Subscriber $subscriber */
@@ -57,14 +57,14 @@ class MailmuteSimplenewsTest extends MailmuteKernelTestBase {
     ));
 
     // Default plugin_id should be send.
-    $this->assertEqual($subscriber->field_sendstate->plugin_id, 'send');
+    $this->assertEqual($subscriber->sendstate->plugin_id, 'send');
 
     // Mails should be sent normally.
     $sent = $this->mail($subscriber);
     $this->assertTrue($sent);
 
     // When plugin_id is onhold, mails should not be sent.
-    $subscriber->field_sendstate->plugin_id = 'onhold';
+    $subscriber->sendstate->plugin_id = 'onhold';
     $subscriber->save();
     $sent = $this->mail($subscriber);
     $this->assertFalse($sent);

@@ -39,20 +39,20 @@ class MuteUserTest extends MailmuteKernelTestBase {
   public function testStates() {
     // A Send state field should be added to User on install.
     $field_map = \Drupal::entityManager()->getFieldMap();
-    $this->assertEqual($field_map['user']['field_sendstate']['type'], 'sendstate');
+    $this->assertEqual($field_map['user']['sendstate']['type'], 'sendstate');
 
     /** @var \Drupal\user\UserInterface $user */
     $user = $this->createUser();
 
     // Default plugin_id should be send.
-    $this->assertEqual($user->field_sendstate->plugin_id, 'send');
+    $this->assertEqual($user->sendstate->plugin_id, 'send');
 
     // Mails should be sent normally.
     $sent = $this->mail($user);
     $this->assertTrue($sent);
 
     // When plugin_id is onhold, mails should not be sent.
-    $user->field_sendstate->plugin_id = 'onhold';
+    $user->sendstate->plugin_id = 'onhold';
     $user->save();
     $sent = $this->mail($user);
     $this->assertFalse($sent);
@@ -92,7 +92,7 @@ class MuteUserTest extends MailmuteKernelTestBase {
 
     $this->assertEqual($manager->getState($user->getEmail())->getConfiguration(), $configuration);
     $user = User::load($user->id());
-    $this->assertEqual($user->field_sendstate->first()->getPlugin()->getConfiguration(), $configuration);
+    $this->assertEqual($user->sendstate->first()->getPlugin()->getConfiguration(), $configuration);
 
     // Set a state attribute (plugin configuration) by transition().
     $configuration = array($this->randomMachineName() => $this->randomMachineName());
@@ -100,7 +100,7 @@ class MuteUserTest extends MailmuteKernelTestBase {
 
     $this->assertEqual($manager->getState($user->getEmail())->getConfiguration(), $configuration);
     $user = User::load($user->id());
-    $this->assertEqual($user->field_sendstate->first()->getPlugin()->getConfiguration(), $configuration);
+    $this->assertEqual($user->sendstate->first()->getPlugin()->getConfiguration(), $configuration);
   }
 
   /**

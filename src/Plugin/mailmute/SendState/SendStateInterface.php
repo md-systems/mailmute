@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
- * Contains \Drupal\mailmute\Plugin\Mailmute\SendState\SendStateInterface.
+ * Contains \Drupal\mailmute\Plugin\mailmute\SendState\SendStateInterface.
  */
 
-namespace Drupal\mailmute\Plugin\Mailmute\SendState;
+namespace Drupal\mailmute\Plugin\mailmute\SendState;
 
 use Drupal\Component\Plugin\ConfigurablePluginInterface;
 use Drupal\Component\Plugin\PluginInspectionInterface;

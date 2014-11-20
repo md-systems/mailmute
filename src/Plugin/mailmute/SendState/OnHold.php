@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
- * Contains \Drupal\mailmute\Plugin\Mailmute\SendState\OnHold.
+ * Contains \Drupal\mailmute\Plugin\mailmute\SendState\OnHold.
  */
 
-namespace Drupal\mailmute\Plugin\Mailmute\SendState;
+namespace Drupal\mailmute\Plugin\mailmute\SendState;
 
 /**
  * Indicates that the address owner requested muting until further notice.

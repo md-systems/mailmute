@@ -3,10 +3,10 @@ status: true
 dependencies:
   module:
     - mailmute
-    - user
-id: user.field_sendstate
-field_name: field_sendstate
-entity_type: user
+    - simplenews
+id: simplenews_subscriber.sendstate
+field_name: sendstate
+entity_type: simplenews_subscriber
 type: sendstate
 settings:
   max_length: 255

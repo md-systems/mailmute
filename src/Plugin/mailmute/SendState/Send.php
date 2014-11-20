@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
- * Contains \Drupal\mailmute\Plugin\Mailmute\SendState\Send.
+ * Contains \Drupal\mailmute\Plugin\mailmute\SendState\Send.
  */
 
-namespace Drupal\mailmute\Plugin\Mailmute\SendState;
+namespace Drupal\mailmute\Plugin\mailmute\SendState;
 
 /**
  * Indicates that messages should not be suppressed.

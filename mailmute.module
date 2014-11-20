@@ -85,5 +85,5 @@ function mailmute_mail_alter(&$message) {
  */
 function mailmute_user_view_alter(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display) {
   $user = \Drupal::currentUser();
-  $build['field_sendstate']['#access'] = $user->hasPermission('administer send state') || ($user->id() == $entity->id() && $user->hasPermission('change own send state'));
+  $build['sendstate']['#access'] = $user->hasPermission('administer send state') || ($user->id() == $entity->id() && $user->hasPermission('change own send state'));
 }

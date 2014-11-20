@@ -30,7 +30,7 @@ class SendStateManager extends DefaultPluginManager implements SendStateManagerI
   /**
    * Lazy-loaded send states, keyed by address.
    *
-   * @var \Drupal\mailmute\Plugin\Mailmute\SendState\SendStateInterface[]
+   * @var \Drupal\mailmute\Plugin\mailmute\SendState\SendStateInterface[]
    */
   protected $states;
 
@@ -38,7 +38,7 @@ class SendStateManager extends DefaultPluginManager implements SendStateManagerI
    * Constructs a SendStateManager object.
    */
   public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler, EntityManagerInterface $entity_manager) {
-    parent::__construct('Plugin/Mailmute/SendState', $namespaces, $module_handler, '\Drupal\mailmute\Plugin\Mailmute\SendState\SendStateInterface', '\Drupal\mailmute\Annotation\SendState');
+    parent::__construct('Plugin/mailmute/SendState', $namespaces, $module_handler, '\Drupal\mailmute\Plugin\mailmute\SendState\SendStateInterface', '\Drupal\mailmute\Annotation\SendState');
     $this->setCacheBackend($cache_backend, 'mailmute_sendstate');
     $this->entityManager = $entity_manager;
   }
@@ -104,7 +104,7 @@ class SendStateManager extends DefaultPluginManager implements SendStateManagerI
     foreach ($this->entityManager->getFieldMap() as $entity_type => $fields) {
 
       // Both users and Simplenews subscribers use 'mail' for email field name.
-      if (isset($fields['field_sendstate']) && isset($fields['mail'])) {
+      if (isset($fields['sendstate']) && isset($fields['mail'])) {
 
         // Get the entity for the given email.
         $entities = $this->entityManager->getStorage($entity_type)->loadByProperties(array(
@@ -114,7 +114,7 @@ class SendStateManager extends DefaultPluginManager implements SendStateManagerI
 
         // Return the send state field.
         if ($entity) {
-          return $entity->field_sendstate;
+          return $entity->sendstate;
         }
       }
     }

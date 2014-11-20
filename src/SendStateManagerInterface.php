@@ -21,7 +21,7 @@ interface SendStateManagerInterface extends PluginManagerInterface {
    * @param string $address
    *   The mail address whose state should be returned.
    *
-   * @return \Drupal\mailmute\Plugin\Mailmute\SendState\SendStateInterface
+   * @return \Drupal\mailmute\Plugin\mailmute\SendState\SendStateInterface
    *   The current state of the address.
    */
   public function getState($address);

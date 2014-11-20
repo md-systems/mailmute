@@ -40,16 +40,16 @@ class MailmuteWebTest extends WebTestBase {
 
     // Check the edit form.
     $this->drupalGet('user/' . $admin->id() . '/edit');
-    $this->assertField('field_sendstate[plugin_id]', 'Send state field found on user form');
-    $this->assertOption('field_sendstate[plugin_id]', 'onhold', NULL, '"On hold" option found on user form');
-    $this->assertOption('field_sendstate[plugin_id]', 'send', NULL, '"Send" option found on user form');
-    $this->assertOption('field_sendstate[plugin_id]', 'send', TRUE, '"Send" option selected by default');
+    $this->assertField('sendstate[plugin_id]', 'Send state field found on user form');
+    $this->assertOption('sendstate[plugin_id]', 'onhold', NULL, '"On hold" option found on user form');
+    $this->assertOption('sendstate[plugin_id]', 'send', NULL, '"Send" option found on user form');
+    $this->assertOption('sendstate[plugin_id]', 'send', TRUE, '"Send" option selected by default');
 
     $edit = array(
-      'field_sendstate[plugin_id]' => 'onhold',
+      'sendstate[plugin_id]' => 'onhold',
     );
     $this->drupalPostForm(NULL, $edit, 'Save');
-    $this->assertOption('field_sendstate[plugin_id]', 'onhold', TRUE, '"On hold" option selection saved');
+    $this->assertOption('sendstate[plugin_id]', 'onhold', TRUE, '"On hold" option selection saved');
 
     // Check the user view.
     $this->drupalGet('user');
@@ -67,7 +67,7 @@ class MailmuteWebTest extends WebTestBase {
 
     // Check that the admin state is selectable.
     $this->drupalGet('user/' . $admin->id() . '/edit');
-    $xpath = "//select[@name='field_sendstate[plugin_id]']//option[@value='admin_state']";
+    $xpath = "//select[@name='sendstate[plugin_id]']//option[@value='admin_state']";
     $this->assertFieldByXPath($xpath);
 
     // Log in non-admin user.

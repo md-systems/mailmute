@@ -31,7 +31,7 @@ class SendStateWidget extends OptionsWidgetBase {
    * {@inheritdoc}
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
-    /** @var \Drupal\mailmute\Plugin\Mailmute\SendState\SendStateInterface $plugin */
+    /** @var \Drupal\mailmute\Plugin\mailmute\SendState\SendStateInterface $plugin */
     $plugin = $items->first()->getPlugin();
 
     $element['#type'] = 'details';
