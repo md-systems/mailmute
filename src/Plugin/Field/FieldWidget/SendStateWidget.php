@@ -7,11 +7,13 @@
 namespace Drupal\mailmute\Plugin\Field\FieldWidget;
 
 use Drupal\Component\Utility\String;
-use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\Plugin\Field\FieldWidget\OptionsWidgetBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\mailmute\SendStateManagerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Select widget for the 'sendstate' entity field.
@@ -27,14 +29,43 @@ use Drupal\Core\Session\AccountInterface;
  *   multiple_values = TRUE
  * )
  */
-class SendStateWidget extends OptionsWidgetBase {
+class SendStateWidget extends OptionsWidgetBase implements ContainerFactoryPluginInterface {
+
+  /**
+   * Injected Send state plugin manager.
+   *
+   * @var \Drupal\mailmute\SendStateManagerInterface
+   */
+  protected $sendstateManager;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($plugin_id, $plugin_defintion, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, SendStateManagerInterface $sendstate_manager) {
+    parent::__construct($plugin_id, $plugin_defintion, $field_definition, $settings, $third_party_settings);
+    $this->sendstateManager = $sendstate_manager;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $plugin_id,
+      $plugin_definition,
+      $configuration['field_definition'],
+      $configuration['settings'],
+      $configuration['third_party_settings'],
+      $container->get('plugin.manager.sendstate')
+    );
+  }
 
   /**
    * {@inheritdoc}
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
-    /** @var \Drupal\mailmute\Plugin\mailmute\SendState\SendStateInterface $plugin */
-    $plugin = $items->first()->getPlugin();
+    /** @var \Drupal\mailmute\Plugin\mailmute\SendState\SendStateInterface $sendstate */
+    $sendstate = $this->sendstateManager->createInstance($items->plugin_id, (array) $items->configuration);
 
     $element['#type'] = 'details';
     $element['plugin_id'] = array(
@@ -42,9 +73,9 @@ class SendStateWidget extends OptionsWidgetBase {
       '#title' => $this->t('State'),
       '#description' => $this->t('The <dfn>send state</dfn> determines whether email should be stopped form being sent from the website to the associated address.'),
       '#options' => $this->getOptions($items->getEntity()),
-      '#default_value' => $plugin->getPluginId(),
+      '#default_value' => $sendstate->getPluginId(),
     );
-    $element['configuration'] = $plugin->form();
+    $element['configuration'] = $sendstate->form();
 
     // Hide if user doesn't have admin privilege.
     $account = \Drupal::currentUser();

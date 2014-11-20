@@ -30,6 +30,8 @@ class SendStateManager extends DefaultPluginManager implements SendStateManagerI
   /**
    * Lazy-loaded send states, keyed by address.
    *
+   * @todo Either actually be lazy in getState() or change this doc.
+   *
    * @var \Drupal\mailmute\Plugin\mailmute\SendState\SendStateInterface[]
    */
   protected $states;
@@ -86,7 +88,7 @@ class SendStateManager extends DefaultPluginManager implements SendStateManagerI
    * {@inheritdoc}
    */
   public function isManaged($address) {
-    return $this->getField($address);
+    return (bool) $this->getField($address);
   }
 
   /**

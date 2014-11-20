@@ -50,9 +50,6 @@
  * @}
  */
 
-use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
-use Drupal\Core\Entity\EntityInterface;
-
 /**
  * Implements hook_mail_alter().
  *
@@ -69,7 +66,9 @@ function mailmute_mail_alter(&$message) {
   // @todo split based on RFC
   // @todo consider all observed formats incl Name <email>
   // @todo if multiple targets and some removed, add header X-Mailmute-To-Remove
-  $state = \Drupal::service('plugin.manager.sendstate')->getState($message['to']);
+  /** @var \Drupal\mailmute\SendStateManagerInterface $manager */
+  $manager = \Drupal::service('plugin.manager.sendstate');
+  $state = $manager->getState($message['to']);
   if (isset($state) && $state->isMute()) {
     $message['send'] = FALSE;
     drupal_set_message(t('Message to %mail suppressed.', array('%mail' => $message['to'])), 'warning');

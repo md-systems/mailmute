@@ -83,16 +83,6 @@ class SendStateItem extends FieldItemBase implements OptionsProviderInterface {
   }
 
   /**
-   * Returns an instance of the plugin, with configuration from field values.
-   *
-   * @return \Drupal\mailmute\Plugin\mailmute\SendState\SendStateInterface
-   *   The send state plugin referenced by the plugin_id of this field.
-   */
-  public function getPlugin() {
-    return \Drupal::service('plugin.manager.sendstate')->createInstance($this->plugin_id, (array) $this->configuration);
-  }
-
-  /**
    * {@inheritdoc}
    */
   public function getPossibleValues(AccountInterface $account = NULL) {

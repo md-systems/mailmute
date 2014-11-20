@@ -92,7 +92,7 @@ class MuteUserTest extends MailmuteKernelTestBase {
 
     $this->assertEqual($manager->getState($user->getEmail())->getConfiguration(), $configuration);
     $user = User::load($user->id());
-    $this->assertEqual($user->sendstate->first()->getPlugin()->getConfiguration(), $configuration);
+    $this->assertEqual($user->sendstate->configuration, $configuration);
 
     // Set a state attribute (plugin configuration) by transition().
     $configuration = array($this->randomMachineName() => $this->randomMachineName());
@@ -100,7 +100,7 @@ class MuteUserTest extends MailmuteKernelTestBase {
 
     $this->assertEqual($manager->getState($user->getEmail())->getConfiguration(), $configuration);
     $user = User::load($user->id());
-    $this->assertEqual($user->sendstate->first()->getPlugin()->getConfiguration(), $configuration);
+    $this->assertEqual($user->sendstate->configuration, $configuration);
   }
 
   /**
