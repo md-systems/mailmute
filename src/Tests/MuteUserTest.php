@@ -8,6 +8,7 @@ namespace Drupal\mailmute\Tests;
 
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\user\Entity\User;
+use Drupal\user\UserInterface;
 
 /**
  * Tests send states for the user entity.
@@ -62,7 +63,7 @@ class MuteUserTest extends MailmuteKernelTestBase {
    * Tests the send state manager methods and the service mechanism.
    */
   public function testSendStateManager() {
-    /** @var \Drupal\mailmute\SendStateManager $manager */
+    /** @var \Drupal\mailmute\SendStateManagerInterface $manager */
     $manager = \Drupal::service('plugin.manager.sendstate');
     $this->assertNotNull($manager, 'Send state manager is loaded');
 
@@ -104,6 +105,30 @@ class MuteUserTest extends MailmuteKernelTestBase {
   }
 
   /**
+   * Tests that no suppressing is made for non-managed addresses.
+   */
+  public function testNonManagedAddress() {
+    /** @var \Drupal\mailmute\SendStateManagerInterface $manager */
+    $manager = \Drupal::service('plugin.manager.sendstate');
+
+    // Create user only to pass into the mail mechanism. But don't save because
+    // then the send state manager will be aware of it, and the point is that it
+    // shouldn't.
+    /** @var \Drupal\user\UserInterface $user */
+    $user = User::create(array(
+      'name' => 'stranger',
+      'mail' => 'stranger@example.com',
+    ));
+
+    // isManaged() should return false.
+    $this->assertFalse($manager->isManaged('stranger@example.com'));
+
+    // Sending should not be suppressed.
+    $sent = $this->mail($user);
+    $this->assertTrue($sent);
+  }
+
+  /**
    * Attempts to send a Password reset mail, and indicates success.
    *
    * @param \Drupal\user\UserInterface $user
@@ -112,7 +137,7 @@ class MuteUserTest extends MailmuteKernelTestBase {
    * @return bool
    *   The result status.
    */
-  protected function mail($user) {
+  protected function mail(UserInterface $user) {
     $params = array('account' => $user);
     $message = $this->mailManager->mail('user', 'password_reset', $user->getEmail(), LanguageInterface::LANGCODE_DEFAULT, $params);
     return $message['result'];

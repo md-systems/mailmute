@@ -35,7 +35,7 @@ class SendStateFormatter extends FormatterBase implements ContainerFactoryPlugin
   /**
    * The sendstate manager.
    *
-   * @var \Drupal\mailmute\SendStateManager
+   * @var \Drupal\mailmute\SendStateManagerInterface
    */
   protected $sendstateManager;
 
