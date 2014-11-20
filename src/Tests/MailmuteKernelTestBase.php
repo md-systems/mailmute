@@ -26,6 +26,7 @@ abstract class MailmuteKernelTestBase extends KernelTestBase {
   protected function setUp() {
     parent::setUp();
     $this->mailManager = \Drupal::service('plugin.manager.mail');
+    \Drupal::config('system.mail')->set('interface', ['default' => 'test_mail_collector'])->save();
   }
 
 }

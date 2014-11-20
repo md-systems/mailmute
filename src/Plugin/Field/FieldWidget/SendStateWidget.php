@@ -7,9 +7,11 @@
 namespace Drupal\mailmute\Plugin\Field\FieldWidget;
 
 use Drupal\Component\Utility\String;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\Plugin\Field\FieldWidget\OptionsWidgetBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Session\AccountInterface;
 
 /**
  * Select widget for the 'sendstate' entity field.
@@ -43,6 +45,11 @@ class SendStateWidget extends OptionsWidgetBase {
       '#default_value' => $plugin->getPluginId(),
     );
     $element['configuration'] = $plugin->form();
+
+    // Hide if user doesn't have admin privilege.
+    $account = \Drupal::currentUser();
+    $element['#access'] = $account->hasPermission('administer send state')
+      || $account->id() == $items->getEntity()->id() && $account->hasPermission('change own send state');
 
     return $element;
   }
