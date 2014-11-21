@@ -52,36 +52,21 @@ class MailmuteController extends ControllerBase {
 
     // Fill table rows with plugin details. Elements are addded directly instead
     // of using #rows, in order to enable #markup for indentation.
-    $build['states'] += $this->buildHierarchicalRows($this->manager->getPluginIdHierarchy(), 0);
-
-    return $build;
-  }
-
-  /**
-   * Builds a row in the state list recursively to manage indentation.
-   */
-  protected function buildHierarchicalRows($ids, $level) {
-    $rows = array();
-    foreach ($ids as $id => $children) {
+    foreach ($this->manager->getPluginHierarchyLevels() as $id => $level) {
       $definition = $this->manager->getDefinition($id);
-
-      // Add indentation to label markup.
       $indentation = array(
         '#theme' => 'indentation',
         '#size' => $level,
       );
-
-      $rows[] = array(
+      $build['states'][] = array(
         'label' => array('#markup' => drupal_render($indentation) . $definition['label']),
         'module' => array('#markup' => $definition['provider']),
         'description' => array('#markup' => $definition['description']),
         'muting' => array('#markup' => $definition['mute'] ? $this->t('Yes') : $this->t('No')),
       );
-
-      // Add rows of children states with deeper indentation.
-      $rows = array_merge($rows, $this->buildHierarchicalRows($children, $level + 1));
     }
-    return $rows;
+
+    return $build;
   }
 
 }

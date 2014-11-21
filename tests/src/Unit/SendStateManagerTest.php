@@ -19,9 +19,10 @@ class SendStateManagerTest extends UnitTestCase {
   /**
    * Tests that the hierarchy is generated correctly.
    *
-   * @covers ::getPluginIdHierarchy
+   * @covers ::getPluginHierarchy
+   * @covers ::getPluginHierarchyLevels
    */
-  function testGetPluginIdHierarchy() {
+  function testGetPluginHierarchy() {
     // A few definition-like structures for input. Mostly follows
     // Mailmute/Inmail design but partly fake. Critical aspects are the third
     // level (child of a child) and the arbitrary order.
@@ -35,7 +36,7 @@ class SendStateManagerTest extends UnitTestCase {
       'onhold' => ['id' => 'onhold'],
     );
 
-    // Expected result.
+    // Expected results.
     $hierarchy = array(
       'send' => array(
         'persistent_send' => array(
@@ -48,17 +49,27 @@ class SendStateManagerTest extends UnitTestCase {
         'temporarily_unreachable' => array(),
       ),
     );
+    $levels = array(
+      'send' => 0,
+      'persistent_send' => 1,
+      'really_persistent_send' => 2,
+      'admin_test' => 1,
+      'onhold' => 0,
+      'invalid_address' => 1,
+      'temporarily_unreachable' => 1,
+    );
 
     /** @var \Drupal\mailmute\SendStateManager|\PHPUnit_Framework_MockObject_MockObject $manager */
     $manager = $this->getMockBuilder('Drupal\mailmute\SendStateManager')
       ->disableOriginalConstructor()
       ->setMethods(array('getDefinitions'))
       ->getMock();
-    $manager->expects($this->once())
+    $manager->expects($this->exactly(2))
       ->method('getDefinitions')
       ->willReturn($definitions);
 
-    $this->assertEquals($hierarchy, $manager->getPluginIdHierarchy());
+    $this->assertEquals($hierarchy, $manager->getPluginHierarchy());
+    $this->assertEquals($levels, $manager->getPluginHierarchyLevels());
   }
 
 }

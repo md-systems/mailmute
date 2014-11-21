@@ -136,7 +136,7 @@ class SendStateManager extends DefaultPluginManager implements SendStateManagerI
   /**
    * {@inheritdoc}
    */
-  public function getPluginIdHierarchy() {
+  public function getPluginHierarchy() {
     $definitions = $this->getDefinitions();
     $hierarchy = array();
 
@@ -184,6 +184,25 @@ class SendStateManager extends DefaultPluginManager implements SendStateManagerI
       }
       return FALSE;
     }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getPluginHierarchyLevels() {
+    return $this->getPluginHierarchyLevelsRec($this->getPluginHierarchy(), 0);
+  }
+
+  /**
+   * Recursive helper for getPluginIdsWithHierarchyLevels().
+   */
+  protected function getPluginHierarchyLevelsRec($hierarchy, $level) {
+    $levels = array();
+    foreach ($hierarchy as $id => $children) {
+      $levels[$id] = $level;
+      $levels = array_merge($levels, $this->getPluginHierarchyLevelsRec($children, $level + 1));
+    }
+    return $levels;
   }
 
 }

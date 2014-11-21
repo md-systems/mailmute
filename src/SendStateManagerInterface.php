@@ -64,6 +64,16 @@ interface SendStateManagerInterface extends PluginManagerInterface {
    *   A nested array containing IDs of all plugins as keys, and their children
    *   (as deduced by the parent_id config property) as values.
    */
-  public function getPluginIdHierarchy();
+  public function getPluginHierarchy();
+
+  /**
+   * Returns the hierarchy level associated with each plugin ID.
+   *
+   * @return array
+   *   An associative array with plugin IDs as keys and their level in the
+   *   plugin hierarchy as values. The array is ordered so that children
+   *   succeed their parent.
+   */
+  public function getPluginHierarchyLevels();
 
 }

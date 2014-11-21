@@ -7,6 +7,7 @@
 namespace Drupal\mailmute\Plugin\Field\FieldWidget;
 
 use Drupal\Component\Utility\String;
+use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\Plugin\Field\FieldWidget\OptionsWidgetBase;
@@ -83,6 +84,19 @@ class SendStateWidget extends OptionsWidgetBase implements ContainerFactoryPlugi
       || $account->id() == $items->getEntity()->id() && $account->hasPermission('change own send state');
 
     return $element;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function getOptions(FieldableEntityInterface $entity) {
+    $options = parent::getOptions($entity);
+    // Store modified items in a new variable to redefine the order.
+    $new_options = array();
+    foreach ($this->sendstateManager->getPluginHierarchyLevels() as $id => $level) {
+      $new_options[$id] = str_repeat('- ', $level) . $options[$id];
+    }
+    return $new_options;
   }
 
   /**
