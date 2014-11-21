@@ -58,6 +58,50 @@ class MailmuteWebTest extends WebTestBase {
   }
 
   /**
+   * Test the limitations of different permissions.
+   */
+  public function testPermissions() {
+    // Normal user can neither view or edit.
+    $user1 = $this->drupalCreateUser();
+    $this->drupalLogin($user1);
+    $this->assertText('Member for');
+    $this->assertNoText('Send emails');
+
+    $this->drupalGet('user/' . $user1->id() . '/edit');
+    $this->assertNoFieldByXPath('//details/summary/text()', 'Send emails');
+
+    // User with 'change own' permission can view and edit own state.
+    $this->drupalLogout();
+    $user2 = $this->drupalCreateUser(array('change own send state', 'access user profiles'));
+    $this->drupalLogin($user2);
+    $this->assertText('Member for');
+    $this->assertText('Send emails');
+
+    $this->drupalGet('user/' . $user2->id() . '/edit');
+    $this->assertFieldByXPath('//details/summary/text()', 'Send emails');
+
+    // But not the state of other users.
+    $this->drupalGet('user/' . $user1->id());
+    $this->assertText('Member for');
+    $this->assertNoText('Send emails');
+
+    // User with admin permission can view and edit own state.
+    $this->drupalLogout();
+    $user3 = $this->drupalCreateUser(array('administer send state', 'access user profiles'));
+    $this->drupalLogin($user3);
+    $this->assertText('Member for');
+    $this->assertText('Send emails');
+
+    $this->drupalGet('user/' . $user3->id() . '/edit');
+    $this->assertFieldByXPath('//details/summary/text()', 'Send emails');
+
+    // And the state of other users.
+    $this->drupalGet('user/' . $user1->id());
+    $this->assertText('Member for');
+    $this->assertText('Send emails');
+  }
+
+  /**
    * Test that some states require admin permission.
    */
   public function testAdminStates() {
@@ -119,7 +163,7 @@ class MailmuteWebTest extends WebTestBase {
   protected function assertOption($select_field, $option_key, $selected = NULL, $message = '', $group = 'Other') {
     $match_selected = isset($selected) ? ($selected ? ' and @selected' : ' and not(@selected)') : '';
     $xpath = "//select[@name='$select_field']//option[@value='$option_key'$match_selected]";
-    $this->assertFieldByXPath($xpath, NULL, $message, $group);
+    return $this->assertFieldByXPath($xpath, NULL, $message, $group);
   }
 
 }

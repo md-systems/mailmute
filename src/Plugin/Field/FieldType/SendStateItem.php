@@ -25,7 +25,9 @@ use Drupal\Core\TypedData\TypedDataInterface;
  *   label = @Translation("Send state"),
  *   description = @Translation("An e-mail send state."),
  *   default_widget = "sendstate",
- *   default_formatter = "sendstate"
+ *   default_formatter = "sendstate",
+ *   no_ui = TRUE,
+ *   list_class = "\Drupal\mailmute\Plugin\Field\FieldType\SendStateFieldItemList"
  * )
  */
 class SendStateItem extends FieldItemBase implements OptionsProviderInterface {
