@@ -94,7 +94,9 @@ class SendStateWidget extends OptionsWidgetBase implements ContainerFactoryPlugi
     // Store modified items in a new variable to redefine the order.
     $new_options = array();
     foreach ($this->sendstateManager->getPluginHierarchyLevels() as $id => $level) {
-      $new_options[$id] = str_repeat('- ', $level) . $options[$id];
+      if (isset($options[$id])) {
+        $new_options[$id] = str_repeat('- ', $level) . $options[$id];
+      }
     }
     return $new_options;
   }
