@@ -15,6 +15,7 @@ use Drupal\simplenews\Source\SourceTest;
  * Tests send state for the Simplenews Subscriber entity.
  *
  * @group mailmute
+ * @requires module simplenews
  */
 class MailmuteSimplenewsTest extends MailmuteKernelTestBase {
 
