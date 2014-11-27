@@ -3,3 +3,7 @@ type: module
 description: Suppress sending mail to some users or subscribers. Suppression can be done manually, or automatically upon bounce messages.
 package: Mail
 core: 8.x
+
+dependencies:
+  - user
+  - field
