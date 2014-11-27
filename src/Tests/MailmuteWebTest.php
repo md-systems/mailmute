@@ -12,7 +12,6 @@ use Drupal\simpletest\WebTestBase;
  * Test the Mailmute UI.
  *
  * @group mailmute
- * @requires module mailmute_test
  */
 class MailmuteWebTest extends WebTestBase {
 
