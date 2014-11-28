@@ -23,19 +23,11 @@ class MailmuteWebTest extends WebTestBase {
   public static $modules = array('mailmute', 'mailmute_test', 'field_ui');
 
   /**
-   * {@inheritdoc}
-   */
-  protected function setUp() {
-    parent::setUp();
-
-  }
-
-  /**
    * Test the Mailmute UI.
    */
   public function testField() {
     // Log in admin.
-    $admin = $this->drupalCreateUser(array('administer send state'));
+    $admin = $this->drupalCreateUser(array('administer mailmute'));
     $this->drupalLogin($admin);
 
     // Check the edit form.
@@ -87,7 +79,7 @@ class MailmuteWebTest extends WebTestBase {
 
     // User with admin permission can view and edit own state.
     $this->drupalLogout();
-    $user3 = $this->drupalCreateUser(array('administer send state', 'access user profiles'));
+    $user3 = $this->drupalCreateUser(array('administer mailmute', 'access user profiles'));
     $this->drupalLogin($user3);
     $this->assertText('Member for');
     $this->assertText('Send emails');
@@ -106,7 +98,7 @@ class MailmuteWebTest extends WebTestBase {
    */
   public function testAdminStates() {
     // Log in admin user.
-    $admin = $this->drupalCreateUser(array('administer send state'));
+    $admin = $this->drupalCreateUser(array('administer mailmute'));
     $this->drupalLogin($admin);
 
     // Check that the admin state is selectable.
@@ -128,7 +120,7 @@ class MailmuteWebTest extends WebTestBase {
    * Test the send state overview page.
    */
   public function testStatesOverview() {
-    $admin = $this->drupalCreateUser(array('administer send state'));
+    $admin = $this->drupalCreateUser(array('administer mailmute'));
     $this->drupalLogin($admin);
     $this->drupalGet('admin/config/people/mailmute/sendstates');
 
@@ -140,6 +132,62 @@ class MailmuteWebTest extends WebTestBase {
 
     // The test state has Send as parent, and should be indented.
     $this->assertRaw('<div class="indentation">&nbsp;</div>Admin state');
+  }
+
+  /**
+   * Tests that notification message display follows configuration.
+   */
+  public function testNotificationMessage() {
+    // Create a muted user.
+    $user = $this->drupalCreateUser();
+    $admin = $this->drupalCreateUser(array('administer users', 'administer mailmute'));
+    $this->drupalLogin($admin);
+    $this->drupalPostForm('user/' . $user->id() . '/edit', array('sendstate[plugin_id]' => 'onhold'), 'Save');
+    $this->drupalLogout();
+    $config = \Drupal::config('mailmute.settings');
+
+    // This path, defined in the routing of the mailmute_test module, sends an
+    // email to the given address.
+    $mail_path = 'mailmute_test_mail/' . $user->getEmail();
+    // This matches the suppression message.
+    $suppress_message = 'Message to ' . $user->getEmail() . ' suppressed';
+
+    // Current user should see message if setting is 'current' or 'always'.
+    $this->drupalLogin($user);
+
+    $config->set('show_message', 'always')->save();
+    $this->drupalGet($mail_path);
+    $this->assertResponse(200);
+    $this->assertText($suppress_message);
+
+    $config->set('show_message', 'current')->save();
+    $this->drupalGet($mail_path);
+    $this->assertResponse(200);
+    $this->assertText($suppress_message);
+
+    $config->set('show_message', 'never')->save();
+    $this->drupalGet($mail_path);
+    $this->assertResponse(200);
+    $this->assertNoText($suppress_message);
+
+    // Another user should only see message if setting is 'always'.
+    $this->drupalLogout();
+    $this->drupalLogin($admin);
+
+    $config->set('show_message', 'always')->save();
+    $this->drupalGet($mail_path);
+    $this->assertResponse(200);
+    $this->assertText($suppress_message);
+
+    $config->set('show_message', 'current')->save();
+    $this->drupalGet($mail_path);
+    $this->assertResponse(200);
+    $this->assertNoText($suppress_message);
+
+    $config->set('show_message', 'never')->save();
+    $this->drupalGet($mail_path);
+    $this->assertResponse(200);
+    $this->assertNoText($suppress_message);
   }
 
   /**

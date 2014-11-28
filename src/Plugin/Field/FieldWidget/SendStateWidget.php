@@ -80,7 +80,7 @@ class SendStateWidget extends OptionsWidgetBase implements ContainerFactoryPlugi
 
     // Hide if user doesn't have admin privilege.
     $account = \Drupal::currentUser();
-    $element['#access'] = $account->hasPermission('administer send state')
+    $element['#access'] = $account->hasPermission('administer mailmute')
       || $account->id() == $items->getEntity()->id() && $account->hasPermission('change own send state');
 
     return $element;

@@ -156,7 +156,7 @@ class SendStateItem extends FieldItemBase implements OptionsProviderInterface {
     }
 
     // The admin permission allows setting any state.
-    if ($account->hasPermission('administer send state')) {
+    if ($account->hasPermission('administer mailmute')) {
       return TRUE;
     }
 

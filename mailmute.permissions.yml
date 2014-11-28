@@ -1,4 +1,4 @@
-administer send state:
+administer mailmute:
   title: 'Administer send state'
   restrict_access: true
 change own send state:

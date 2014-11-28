@@ -22,7 +22,7 @@ class SendStateFieldItemList extends FieldItemList {
    */
   public function defaultAccess($operation = 'view', AccountInterface $account = NULL) {
     // Allow if user has admin permission.
-    return AccessResult::allowedIfHasPermission($account, 'administer send state')
+    return AccessResult::allowedIfHasPermission($account, 'administer mailmute')
       // Allow if user has 'change own' permission and is operating on themself.
       ->orIf(AccessResult::allowedIfHasPermission($account, 'change own send state')
           ->andIf(AccessResult::allowedIf(isset($account) && $this->getEntity()->id() == $account->id())))

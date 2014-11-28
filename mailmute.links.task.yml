@@ -1,0 +1,9 @@
+mailmute.settings:
+  route_name: mailmute.settings
+  title: 'Settings'
+  base_route: mailmute.settings
+
+mailmute.sendstate_list:
+  route_name: mailmute.sendstate_list
+  title: 'Message handlers'
+  base_route: mailmute.settings

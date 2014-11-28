@@ -70,7 +70,41 @@ function mailmute_mail_alter(&$message) {
   $manager = \Drupal::service('plugin.manager.sendstate');
   $state = $manager->getState($message['to']);
   if (isset($state) && $state->isMute()) {
+    // Suppress email.
     $message['send'] = FALSE;
-    drupal_set_message(t('Message to %mail suppressed.', array('%mail' => $message['to'])), 'warning');
+
+    // Show a notification message in UI.
+    if (mailmute_show_message($message['to'])) {
+      drupal_set_message(t('Message to %mail suppressed.', array('%mail' => $message['to'])), 'warning');
+    }
+  }
+}
+
+/**
+ * Determines whether current user may know about message being suppressed.
+ *
+ * The result depends on the user's permissions and the 'show_message' config
+ * setting.
+ *
+ * @param string $recipient
+ *   The address of the mail recipient.
+ *
+ * @return bool
+ *   Whether the message should be displayed or not.
+ */
+function mailmute_show_message($recipient) {
+  $show_message = \Drupal::config('mailmute.settings')->get('show_message');
+
+  switch ($show_message) {
+    case 'always':
+      return TRUE;
+
+    case 'never':
+      return FALSE;
+
+    // This case being default corresponds to the value in the default config.
+    case 'current':
+    default:
+      return $recipient == \Drupal::currentUser()->getEmail();
   }
 }
